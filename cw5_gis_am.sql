@@ -1,0 +1,12 @@
+create table obiekty(geometria geometry not null, nazwa varchar not null);
+create index ix on obiekty(nazwa);
+insert into obiekty(geometria, nazwa) values(st_geomfromtext('compoundcurve(linestring(0 1,1 1), circularstring(1 1,2 0,3 1), circularstring(3 1,4 2,5 1), linestring(5 1,6 1))', -1), 'obiekt1');
+insert into obiekty(geometria, nazwa) values(st_geomfromtext('curvepolygon(compoundcurve(linestring(10 6,14 6), circularstring(14 6,16 4,14 2), circularstring(14 2,12 0,10 2), linestring(10 2,10 6)),circularstring(11 2,12 1,13 2,12 3,11 2))', -1),'obiekt2');
+insert into obiekty(geometria, nazwa) values(st_geomfromtext('polygon((7 15,10 17,12 13,7 15))',-1),'obiekt3');
+insert into obiekty(geometria, nazwa) values(st_geomfromtext('linestring(20 20,25 25,27 24,25 22,26 21,22 19,20.5 19.5)',-1),'obiekt4');
+insert into obiekty(geometria, nazwa) values(st_geomfromtext('multipoint(30 30 59,38 32 234)',-1),'obiekt5');
+insert into obiekty(geometria, nazwa) values(st_geomfromtext('geometrycollection(point(4 2), linestring(1 1,3 2))',-1),'obiekt6');
+select st_area(st_buffer(st_shortestline(object1.geometria, object2.geometria), 5)) from obiekty object1, obiekty object2 where object1.nazwa='obiekt3' and object2.nazwa='obiekt4';
+select st_makepolygon(st_addpoint(geometria, st_startpoint(geometria))) from obiekty where nazwa='obiekt4';
+insert into obiekty(geometria, nazwa) select st_collect(object1.geometria, object2.geometria),'obiekt7' from obiekty object1, obiekty object2 where object1.nazwa='obiekt3' and object2.nazwa='obiekt4';
+select st_area(st_buffer(geometria, 5)) from obiekty where st_hasarc(geometria)=false;
